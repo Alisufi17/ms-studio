@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MS Studio — Kasir, Booking & Buku Kas
 
-## Getting Started
+Pengganti `dashboard.html`. Next.js (App Router) + Supabase (Auth, Postgres, RLS), di-deploy ke Vercel.
 
-First, run the development server:
+## Menu
+
+| Menu | Untuk | Isi |
+|---|---|---|
+| Ringkasan | Pemilik | Omzet per periode/cabang/layanan/metode/karyawan, omzet harian, kas di laci |
+| Kasir | Semua | Katalog + keranjang, pesanan QR masuk (realtime), pesanan lunas hari ini |
+| Booking | Semua | Konfirmasi DP, agenda 30 hari, booking manual dengan cek jam bentrok, pelunasan |
+| Job Luar | Semua | Acara luar studio, DP/pelunasan masuk Buku Kas, pengingat mulai **H-4** |
+| Hasil Edit | Semua | Antrean kirim hasil foto dengan batas kirim & penanggung jawab; telat = merah |
+| Buku Kas | Semua | Semua uang masuk/keluar/setoran, disaring **tanggal + cabang + metode + nama**; pemilik bisa **export Excel** |
+| Katalog | Pemilik | Paket & harga per cabang, QR pesan mandiri, gambar QRIS |
+| Akun | Pemilik | Buat akun, ganti sandi, nonaktifkan |
+| `/pesan/jtb`, `/pesan/adw` | Customer | Pesan mandiri lewat QR, tanpa login |
+
+## Pasang (sekali saja)
+
+1. **Supabase › SQL Editor** — jalankan `supabase/migrations/001_foundation.sql`.
+   Aman: hanya menambah tabel/fungsi. Dashboard lama tetap jalan.
+2. **Vercel** — impor repo ini, isi Environment Variables seperti `.env.example`
+   (URL, anon key, dan *service role key* proyek `ivodkdvhlkwevfkkzujs`). Deploy.
+3. Buka `https://<domain>/setup` → buat akun pemilik. Halaman ini tertutup sendiri setelah akun pertama ada.
+4. Login → menu **Akun** → buat akun admin **Hansen** dan **Duwi**.
+   Tulis namanya persis seperti di data lama (`Hansen`, `Duwi`) supaya riwayat menyambung.
+5. Coba dulu beberapa hari berdampingan dengan dashboard lama (keduanya menulis ke tabel yang sama).
+6. **Saat siap pindah** — jalankan `supabase/migrations/002_lockdown.sql`.
+   Mulai saat itu data hanya bisa diakses akun yang login; dashboard lama berhenti berfungsi.
+   Website booking lama tetap bisa cek jam & kirim booking.
+7. Cetak ulang QR meja dari menu **Katalog** (alamatnya berubah menjadi `/pesan/jtb` dan `/pesan/adw`).
+
+## Pengingat
+
+- **Di aplikasi** (selalu aktif): pita pengingat di atas semua halaman + angka di menu, untuk
+  hasil edit yang telat / jatuh tempo ≤ besok dan job luar ≤ H-4.
+- **Hasil edit masuk antrean otomatis** saat booking atau job luar ditandai selesai, dan saat paket
+  Foto Keluarga / Wisuda / Pas Foto / Single / Cetak dibayar di kasir. Self Photo & Photobox tidak
+  (filenya langsung jadi). Batas kirim bawaan: Pas Foto 1 hari, foto studio & cetak 3 hari,
+  job luar 7 hari — diatur di fungsi `edit_hari` (file migrasi). Hanya pemilik yang bisa memundurkan batas.
+- **Ke HP lewat Telegram** (opsional): isi `CRON_SECRET`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`
+  di Vercel. Tiap 08.00 WIB grup menerima daftar yang telat, jatuh tempo, dan job luar terdekat.
+
+## Menjalankan di komputer sendiri
 
 ```bash
+cp .env.example .env.local   # lalu isi kuncinya
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Catatan rancangan
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Login**: Supabase Auth. Username diubah menjadi email internal `username@msstudio.local`
+  (bisa diganti lewat env `AUTH_EMAIL_DOMAIN`). Sandi di-hash oleh Supabase.
+- **Hak akses** ditegakkan database (RLS), bukan browser: karyawan boleh melihat & menambah,
+  hanya pemilik yang boleh menghapus/mengubah buku kas, katalog, dan akun.
+- **Harga & total dihitung di database** (`pos_checkout`, `create_public_order`), jadi tidak bisa
+  dimanipulasi dari HP customer. Pesanan + item + pemasukan tersimpan dalam satu transaksi.
+- **Ringkasan dihitung di database** (`ringkasan`, `posisi_kas`); halaman tidak lagi mengunduh semua baris.
+- Tabel lama yang belum dipakai (config, alokasi, event, notes, sop_*, leads) tidak dihapus —
+  hanya ditutup dari akses luar oleh `002_lockdown.sql`.
