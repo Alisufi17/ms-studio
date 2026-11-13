@@ -19,7 +19,7 @@ function Bayar({ b, stage, jumlah, label }: { b: B; stage: "DP" | "Pelunasan"; j
   return (
     <details className="basis-full sm:basis-auto">
       <summary className={`${stage === "DP" ? "btn-ok" : "btn-primary"} btn-sm`}>{label}</summary>
-      <ActionForm action={bayarBooking} submit="Catat pembayaran" submitClass="btn-ok btn-sm" className="mt-2 flex flex-wrap items-center gap-2 rounded-xl bg-soft p-2.5">
+      <ActionForm action={bayarBooking} submit="Catat pembayaran" submitClass="btn-ok btn-sm" className="mt-2 flex flex-wrap items-center gap-2 rounded-md bg-soft p-2.5">
         <input type="hidden" name="rid" value={b.id} /><input type="hidden" name="stage" value={stage} />
         <div className="w-32"><MoneyInput name="jumlah" defaultValue={jumlah} /></div>
         <select name="metode" className="input w-28" defaultValue={stage === "DP" ? "QRIS" : "Cash"}>{METODE.map((m) => <option key={m}>{m}</option>)}</select>
@@ -34,24 +34,24 @@ function Kartu({ b, semuaCabang }: { b: B; semuaCabang: boolean }) {
   const sisa = Math.max(0, (b.total || 0) - dibayar);
   const link = wa(b.no_hp);
   return (
-    <article className="rounded-xl border border-line bg-surface p-3">
+    <article className="rounded-md border border-line bg-surface p-3">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <b className="num mr-2 text-[15px]">{b.jam_event?.slice(0, 5) ?? "—"}</b><b>{b.customer}</b>
           <span className="block text-xs text-muted">
             {b.layanan}{b.paket && b.paket !== b.layanan ? ` · ${b.paket}` : ""}{semuaCabang ? ` · ${b.cabang}` : ""}{b.source === "website" ? " · dari website" : ""}
           </span>
-          {b.catatan && <span className="block text-xs text-muted">📝 {b.catatan}</span>}
+          {b.catatan && <span className="block text-xs text-muted">Catatan: {b.catatan}</span>}
         </div>
         <div className="shrink-0 text-right">
           <span className={pill[b.status] ?? "pill-mute"}>{b.status}</span>
           <b className="num mt-1 block text-[13px]">{rp(b.total)}</b>
-          {sisa > 0 && b.status !== "Batal" && <span className="num block text-[11px] font-semibold text-warn">sisa {rp(sisa)}</span>}
+          {sisa > 0 && b.status !== "Batal" && <span className="num block text-[11px] font-medium text-warn">sisa {rp(sisa)}</span>}
         </div>
       </div>
       {!["Selesai", "Batal"].includes(b.status) && (
         <div className="no-print mt-2.5 flex flex-wrap items-start gap-1.5">
-          {b.status === "Pending" && <Bayar b={b} stage="DP" jumlah={b.dp || 0} label="✓ DP masuk, kunci jadwal" />}
+          {b.status === "Pending" && <Bayar b={b} stage="DP" jumlah={b.dp || 0} label="DP masuk, kunci jadwal" />}
           {b.status === "Aktif" && <Bayar b={b} stage="Pelunasan" jumlah={sisa} label={`Lunasi ${rp(sisa)}`} />}
           {b.status === "Lunas" && <ActionButton action={statusBooking.bind(null, b.id, "Selesai")} className="btn-ok btn-sm">Tandai selesai</ActionButton>}
           {link && <a href={link} target="_blank" rel="noreferrer" className="btn-ghost btn-sm">WhatsApp</a>}
@@ -105,17 +105,17 @@ export default async function BookingPage({ searchParams }: { searchParams: Prom
       </div>
 
       <details className="card no-print mb-4">
-        <summary className="text-[15px] font-extrabold">＋ Booking baru <span className="sub font-semibold">· {cabangKerja}</span></summary>
+        <summary className="h2">+ Booking baru <span className="sub font-medium">· {cabangKerja}</span></summary>
         <div className="mt-3"><BookingForm cabang={cabangKerja} minDate={t} /></div>
       </details>
 
       {pending.length > 0 && !pilih && (
         <section className="card mb-4 border-warn/40 bg-warn-soft/40">
-          <h2 className="mb-2 text-[15px] font-extrabold">Menunggu konfirmasi DP <span className="pill-warn ml-1">{pending.length}</span></h2>
+          <h2 className="mb-2 h2">Menunggu konfirmasi DP <span className="pill-warn ml-1">{pending.length}</span></h2>
           <div className="grid gap-2.5 md:grid-cols-2">
             {pending.map((b) => (
               <div key={b.id}>
-                <p className={`mb-1 text-xs font-bold ${b.tanggal_event && b.tanggal_event < t ? "text-bad" : "text-muted"}`}>{b.tanggal_event ? labelHari(b.tanggal_event) : "Tanpa tanggal"}{b.tanggal_event && b.tanggal_event < t ? " · sudah lewat" : ""}</p>
+                <p className={`mb-1 text-xs font-medium ${b.tanggal_event && b.tanggal_event < t ? "text-bad" : "text-muted"}`}>{b.tanggal_event ? labelHari(b.tanggal_event) : "Tanpa tanggal"}{b.tanggal_event && b.tanggal_event < t ? " · sudah lewat" : ""}</p>
                 <Kartu b={b} semuaCabang={!cabang} />
               </div>
             ))}
@@ -125,11 +125,11 @@ export default async function BookingPage({ searchParams }: { searchParams: Prom
 
       {lewat.length > 0 && (
         <section className="card mb-4">
-          <h2 className="text-[15px] font-extrabold">Sudah lewat, belum ditutup <span className="pill-warn ml-1">{lewat.length}</span></h2>
+          <h2 className="h2">Sudah lewat, belum ditutup <span className="pill-warn ml-1">{lewat.length}</span></h2>
           <p className="sub mb-2 text-xs">Lunasi lalu tandai selesai — hasil fotonya otomatis masuk antrean Hasil Edit.</p>
           <div className="grid gap-2.5 md:grid-cols-2">
             {lewat.map((b) => (
-              <div key={b.id}><p className="mb-1 text-xs font-bold text-muted">{labelHari(b.tanggal_event!)}</p><Kartu b={b} semuaCabang={!cabang} /></div>
+              <div key={b.id}><p className="mb-1 text-xs font-medium text-muted">{labelHari(b.tanggal_event!)}</p><Kartu b={b} semuaCabang={!cabang} /></div>
             ))}
           </div>
         </section>
@@ -137,7 +137,7 @@ export default async function BookingPage({ searchParams }: { searchParams: Prom
 
       {hari.map((d) => (
         <section key={d} className="mb-4">
-          <h2 className="mb-2 text-[13px] font-extrabold uppercase tracking-wide text-muted">{labelHari(d)} <span className="font-semibold normal-case">· {agenda.filter((b) => b.tanggal_event === d).length} booking</span></h2>
+          <h2 className="mb-2 text-xs font-medium text-muted">{labelHari(d)} <span className="font-medium normal-case">· {agenda.filter((b) => b.tanggal_event === d).length} booking</span></h2>
           <div className="grid gap-2.5 md:grid-cols-2">
             {agenda.filter((b) => b.tanggal_event === d).map((b) => <Kartu key={b.id} b={b} semuaCabang={!cabang} />)}
           </div>

@@ -74,12 +74,12 @@ export function OrderBuilder({
   if (done)
     return (
       <div className="card mx-auto mt-10 max-w-md p-7 text-center">
-        <div className="mx-auto mb-3 grid size-14 place-items-center rounded-full bg-ok-soft text-2xl font-black text-ok">✓</div>
+        <div className="mx-auto mb-3 grid size-14 place-items-center rounded-full bg-ok-soft text-sm font-medium text-ok">OK</div>
         <h1 className="h1">Terima kasih, {done.customer_name}</h1>
         <p className="sub">Tunjukkan nomor ini ke karyawan MS Studio {branch}.</p>
-        <div className="my-4 rounded-xl bg-soft p-4 text-2xl font-black tracking-wide">{done.order_no}</div>
+        <div className="my-4 rounded-md bg-soft p-4 text-2xl font-medium tracking-wide">{done.order_no}</div>
         <p className="mb-4 text-sm">Total <b className="num">{rp(done.total)}</b> · {done.payment_method}</p>
-        <p className="mb-4 rounded-lg bg-warn-soft px-3 py-2 text-xs font-semibold text-warn">
+        <p className="mb-4 rounded-lg bg-warn-soft px-3 py-2 text-xs font-medium text-warn">
           {done.payment_method === "QRIS" ? "Bayar QRIS lalu tunjukkan bukti ke karyawan." : "Silakan bayar cash di kasir."}
         </p>
         <button className="btn-ghost w-full" onClick={() => setDone(null)}>Buat pesanan baru</button>
@@ -98,13 +98,13 @@ export function OrderBuilder({
         <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 xl:grid-cols-4">
           {shown.map((p) => (
             <button key={p.id} type="button" onClick={() => pick(p)}
-              className="flex cursor-pointer flex-col rounded-2xl border border-line bg-surface p-3 text-left transition hover:border-rose">
-              <span className="text-[10px] font-extrabold uppercase tracking-wide text-rose">{p.category}</span>
+              className="flex cursor-pointer flex-col rounded-lg border border-line bg-surface p-3 text-left transition hover:border-zinc-400">
+              <span className="text-[11px] text-muted">{p.category}</span>
               <b className="mt-0.5 text-[13.5px] leading-tight">{p.name}</b>
               <span className="mt-1 flex-1 text-[11px] leading-snug text-muted">
                 {(p.description ?? "").split("\n").filter(Boolean).slice(0, mode === "public" ? 4 : 2).map((d, i) => <span key={i} className="block">· {d}</span>)}
               </span>
-              <span className="mt-1.5 text-[10.5px] font-semibold text-muted">{peopleLabel(p)}</span>
+              <span className="mt-1.5 text-[10.5px] font-medium text-muted">{peopleLabel(p)}</span>
               <span className="mt-1 flex items-baseline gap-1.5">
                 <b className="num text-[15px]">{rp(p.price)}</b>
                 {Number(p.original_price) > Number(p.price) && <del className="num text-[10.5px] text-muted">{rp(p.original_price)}</del>}
@@ -116,8 +116,8 @@ export function OrderBuilder({
 
       <aside ref={cartRef} className="card lg:sticky lg:top-4">
         <div className="mb-2 flex items-center justify-between">
-          <h2 className="text-[15px] font-extrabold">{mode === "public" ? "Pesanan saya" : "Keranjang"} <span className="sub font-semibold">· {count} item</span></h2>
-          {cart.length > 0 && <button type="button" className="cursor-pointer text-xs font-bold text-rose" onClick={() => setCart([])}>Kosongkan</button>}
+          <h2 className="h2">{mode === "public" ? "Pesanan saya" : "Keranjang"} <span className="sub font-medium">· {count} item</span></h2>
+          {cart.length > 0 && <button type="button" className="cursor-pointer text-xs text-muted underline" onClick={() => setCart([])}>Kosongkan</button>}
         </div>
         {!lines.length && <p className="sub py-6 text-center">Belum ada paket dipilih.</p>}
         {lines.map((l, i) => (
@@ -126,26 +126,26 @@ export function OrderBuilder({
               <b className="block truncate text-[12.5px]">{l.p.name}</b>
               <span className="text-[11px] text-muted">{l.p.category}{l.people ? ` · ${l.people} orang` : ""}</span>
             </div>
-            <button type="button" aria-label="Kurangi" className="size-7 cursor-pointer rounded-lg bg-soft font-black" onClick={() => bump(i, -1)}>−</button>
+            <button type="button" aria-label="Kurangi" className="size-7 cursor-pointer rounded-lg bg-soft font-medium" onClick={() => bump(i, -1)}>−</button>
             <b className="num w-4 text-center text-xs">{l.qty}</b>
-            <button type="button" aria-label="Tambah" className="size-7 cursor-pointer rounded-lg bg-soft font-black" onClick={() => bump(i, 1)}>+</button>
+            <button type="button" aria-label="Tambah" className="size-7 cursor-pointer rounded-lg bg-soft font-medium" onClick={() => bump(i, 1)}>+</button>
             <b className="num w-20 text-right text-[12.5px]">{rp(l.u * l.qty)}</b>
           </div>
         ))}
         {addons.length > 0 && (
-          <div className="mt-2 rounded-xl bg-soft p-2.5">
+          <div className="mt-2 rounded-md bg-soft p-2.5">
             <b className="text-[11.5px]">Tambahan</b>
             <div className="mt-1.5 grid gap-1">
               {addons.map((p) => (
-                <button key={p.id} type="button" onClick={() => pick(p)} className="flex cursor-pointer items-center justify-between rounded-lg bg-surface px-2.5 py-1.5 text-left text-[11.5px] font-semibold">
-                  <span className="truncate">{p.name}</span><span className="num shrink-0 pl-2 text-rose">+ {rp(p.price)}</span>
+                <button key={p.id} type="button" onClick={() => pick(p)} className="flex cursor-pointer items-center justify-between rounded-lg bg-surface px-2.5 py-1.5 text-left text-[11.5px] font-medium">
+                  <span className="truncate">{p.name}</span><span className="num shrink-0 pl-2 text-muted">+ {rp(p.price)}</span>
                 </button>
               ))}
             </div>
           </div>
         )}
         <div className="mt-2 flex items-center justify-between border-t-2 border-line pt-3">
-          <span className="sub font-bold">Total</span><b className="num text-xl">{rp(total)}</b>
+          <span className="sub font-medium">Total</span><b className="num text-xl font-semibold">{rp(total)}</b>
         </div>
         <div className="mt-3 space-y-2">
           <input className="input" placeholder={mode === "public" ? "Nama *" : "Nama customer *"} autoComplete="name" value={form.customer} onChange={(e) => setForm({ ...form, customer: e.target.value })} />
@@ -154,18 +154,18 @@ export function OrderBuilder({
           <div className="grid grid-flow-col gap-1.5">
             {(mode === "public" ? ["Cash", "QRIS"] : ["Cash", "QRIS", "Transfer"]).map((m) => (
               <button key={m} type="button" onClick={() => setMetode(m)}
-                className={`cursor-pointer rounded-xl border-2 py-2 text-xs font-extrabold ${metode === m ? "border-rose bg-rose-soft text-rose" : "border-line bg-surface"}`}>{m}</button>
+                className={`cursor-pointer rounded-md border py-2 text-xs font-medium ${metode === m ? "border-ink bg-ink text-white" : "border-line bg-surface text-muted"}`}>{m}</button>
             ))}
           </div>
           {metode === "QRIS" && qris && (
-            <div className="rounded-xl border border-line p-3 text-center">
+            <div className="rounded-md border border-line p-3 text-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               {qris.image ? <img src={qris.image} alt={`QRIS MS Studio ${branch}`} className="mx-auto max-h-56 rounded-lg" /> : <p className="sub py-4">QRIS dibayar di kasir</p>}
               <p className="sub mt-1 text-[11px]">{qris.note || "Tunjukkan bukti pembayaran ke karyawan."}</p>
             </div>
           )}
-          {msg.err && <p className="rounded-lg bg-bad-soft px-3 py-2 text-xs font-semibold text-bad">{msg.err}</p>}
-          {msg.ok && <p className="rounded-lg bg-ok-soft px-3 py-2 text-xs font-semibold text-ok">{msg.ok}</p>}
+          {msg.err && <p className="rounded-lg bg-bad-soft px-3 py-2 text-xs font-medium text-bad">{msg.err}</p>}
+          {msg.ok && <p className="rounded-lg bg-ok-soft px-3 py-2 text-xs font-medium text-ok">{msg.ok}</p>}
           <button type="button" className="btn-primary w-full py-3" disabled={pending || !cart.length} onClick={send}>
             {pending ? "Menyimpan…" : mode === "public" ? `Kirim pesanan · ${rp(total)}` : `Bayar & catat ${rp(total)}`}
           </button>
@@ -176,30 +176,30 @@ export function OrderBuilder({
       </aside>
 
       {count > 0 && (
-        <div className="fixed inset-x-3 bottom-[4.5rem] z-30 flex items-center justify-between rounded-2xl bg-ink px-4 py-2.5 text-white shadow-xl lg:hidden"
+        <div className="fixed inset-x-3 bottom-[4.5rem] z-30 flex items-center justify-between rounded-lg bg-ink px-4 py-2.5 text-white shadow-xl lg:hidden"
           style={mode === "public" ? { bottom: "0.75rem" } : undefined}>
           <span><b className="block text-sm">{count} item</b><span className="num text-xs opacity-80">{rp(total)}</span></span>
-          <button type="button" className="cursor-pointer rounded-lg bg-white px-3 py-2 text-xs font-extrabold text-ink" onClick={() => cartRef.current?.scrollIntoView({ behavior: "smooth" })}>Lihat keranjang</button>
+          <button type="button" className="cursor-pointer rounded-lg bg-white px-3 py-2 text-xs font-medium text-ink" onClick={() => cartRef.current?.scrollIntoView({ behavior: "smooth" })}>Lihat keranjang</button>
         </div>
       )}
 
       {picker && (
         <div className="fixed inset-0 z-50 grid place-items-center bg-ink/50 p-4" onClick={(e) => e.target === e.currentTarget && setPicker(null)}>
           <div className="card w-full max-w-sm p-5">
-            <span className="text-[10px] font-extrabold uppercase tracking-wide text-rose">{picker.item.category}</span>
-            <h3 className="text-lg font-extrabold">{picker.item.name}</h3>
+            <span className="text-[11px] text-muted">{picker.item.category}</span>
+            <h3 className="text-lg font-medium">{picker.item.name}</h3>
             <p className="sub mb-4">{peopleLabel(picker.item)}</p>
-            <div className="mb-4 flex items-center justify-between rounded-xl border border-line p-3">
+            <div className="mb-4 flex items-center justify-between rounded-md border border-line p-3">
               <b>Berapa orang?</b>
               <div className="flex items-center gap-3">
-                <button type="button" className="size-10 cursor-pointer rounded-xl bg-soft text-xl font-black" onClick={() => setPicker({ ...picker, people: Math.max(1, picker.people - 1) })}>−</button>
+                <button type="button" className="size-10 cursor-pointer rounded-md bg-soft text-xl font-medium" onClick={() => setPicker({ ...picker, people: Math.max(1, picker.people - 1) })}>−</button>
                 <b className="num w-6 text-center text-xl">{picker.people}</b>
-                <button type="button" className="size-10 cursor-pointer rounded-xl bg-soft text-xl font-black"
+                <button type="button" className="size-10 cursor-pointer rounded-md bg-soft text-xl font-medium"
                   onClick={() => setPicker({ ...picker, people: Math.min(Math.max(picker.item.max_people || 30, picker.item.included_people), picker.people + 1) })}>+</button>
               </div>
             </div>
-            <div className="mb-4 flex items-center justify-between rounded-xl bg-ink px-4 py-3 text-white">
-              <span className="text-xs opacity-80">Harga paket</span><b className="num text-xl">{rp(unit(picker.item, picker.people))}</b>
+            <div className="mb-4 flex items-center justify-between rounded-md bg-ink px-4 py-3 text-white">
+              <span className="text-xs opacity-80">Harga paket</span><b className="num text-xl font-semibold">{rp(unit(picker.item, picker.people))}</b>
             </div>
             <div className="flex gap-2">
               <button type="button" className="btn-ghost flex-1" onClick={() => setPicker(null)}>Batal</button>

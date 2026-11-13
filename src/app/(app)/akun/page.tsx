@@ -30,14 +30,14 @@ export default async function AkunPage() {
                   <div><label className="label">Kata sandi baru (kosongkan bila tetap)</label><input name="password" type="password" autoComplete="new-password" minLength={8} className="input" /></div>
                   <div><label className="label">Peran</label><select name="role" defaultValue={u.role} className="input"><option value="karyawan">Admin</option><option value="pemilik">Pemilik</option></select></div>
                   <div><label className="label">Cabang utama</label><Cabang value={u.cabang} /></div>
-                  <label className="flex items-center gap-2 text-[13px] font-semibold"><input type="checkbox" name="aktif" defaultChecked={u.aktif} /> Akun aktif (boleh login)</label>
+                  <label className="flex items-center gap-2 text-[13px] font-medium"><input type="checkbox" name="aktif" defaultChecked={u.aktif} /> Akun aktif (boleh login)</label>
                 </ActionForm>
               </details>
             ))}
           </div>
         </section>
         <section className="card self-start">
-          <h2 className="mb-2 text-[15px] font-extrabold">＋ Akun baru</h2>
+          <h2 className="mb-2 h2">+ Akun baru</h2>
           <ActionForm action={buatAkun} submit="Buat akun" className="space-y-2">
             <div><label className="label">Nama</label><input name="nama" className="input" required /></div>
             <div><label className="label">Username (huruf kecil, tanpa spasi)</label><input name="username" autoCapitalize="none" className="input" required /></div>

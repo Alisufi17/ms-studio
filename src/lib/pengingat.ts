@@ -9,7 +9,7 @@ export const JOB_HARI = 4; // job luar mulai diingatkan H-4
 export const selisihHari = (tanggal: string, dari = today()) =>
   Math.round((Date.parse(tanggal + "T00:00:00Z") - Date.parse(dari + "T00:00:00Z")) / 864e5);
 
-export const labelH = (n: number) => (n < 0 ? `lewat ${-n} hari` : n === 0 ? "HARI INI" : n === 1 ? "BESOK" : `H-${n}`);
+export const labelH = (n: number) => (n < 0 ? `lewat ${-n} hari` : n === 0 ? "hari ini" : n === 1 ? "besok" : `H-${n}`);
 
 /** Yang perlu perhatian sekarang: job luar ≤ H-4 dan hasil edit yang telat / jatuh tempo ≤ besok. */
 export async function getPengingat(sb: SupabaseClient) {

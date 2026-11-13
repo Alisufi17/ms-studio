@@ -19,10 +19,10 @@ export default async function PesanPage({ params }: { params: Promise<{ kode: st
   return (
     <main className="mx-auto max-w-6xl px-4 pb-24 pt-5">
       <header className="mb-5 flex items-center gap-3">
-        <div className="grid size-11 place-items-center rounded-xl bg-rose text-xl font-extrabold text-white">M</div>
+        <div className="grid size-11 place-items-center rounded-md bg-rose text-xl font-medium text-white">M</div>
         <div><b className="block text-base">MS Studio {cab.nama}</b><span className="sub text-xs">Pilih paket, isi nama, kirim ke kasir</span></div>
       </header>
-      <h1 className="mb-4 text-2xl font-extrabold tracking-tight">Mau foto apa hari ini?</h1>
+      <h1 className="mb-4 text-2xl font-medium tracking-tight">Mau foto apa hari ini?</h1>
       <OrderBuilder items={(catalog ?? []) as CatalogItem[]} mode="public" branch={cab.nama} submit={kirimPesanan.bind(null, cab.nama)} qris={{ image: cab.qris_image, note: cab.qris_note }} />
     </main>
   );

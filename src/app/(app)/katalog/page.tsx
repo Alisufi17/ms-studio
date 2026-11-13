@@ -29,8 +29,8 @@ function FormItem({ item, cabang, kategori }: { item?: Item; cabang: string; kat
       <div><label className="label">Maksimal orang</label><input name="max_people" inputMode="numeric" defaultValue={item?.max_people || 30} className="input" /></div>
       <div><label className="label">Tambahan ini cocok untuk</label><input name="applies_to" defaultValue={item?.applies_to ?? ""} className="input" placeholder="mis. Semua paket" /></div>
       <div className="sm:col-span-2"><label className="label">Yang didapat customer (satu poin per baris)</label><textarea name="description" rows={4} defaultValue={item?.description ?? ""} className="input" /></div>
-      <label className="flex items-center gap-2 text-[13px] font-semibold"><input type="checkbox" name="active" defaultChecked={item?.active ?? true} /> Tampil di kasir & halaman QR</label>
-      {!item && <label className="flex items-center gap-2 text-[13px] font-semibold"><input type="checkbox" name="semua_cabang" /> Buat juga di semua cabang</label>}
+      <label className="flex items-center gap-2 text-[13px] font-medium"><input type="checkbox" name="active" defaultChecked={item?.active ?? true} /> Tampil di kasir & halaman QR</label>
+      {!item && <label className="flex items-center gap-2 text-[13px] font-medium"><input type="checkbox" name="semua_cabang" /> Buat juga di semua cabang</label>}
     </ActionForm>
   );
 }
@@ -55,13 +55,13 @@ export default async function KatalogPage({ searchParams }: { searchParams: Prom
 
       <div className="mb-4 grid gap-4 lg:grid-cols-[1fr_300px]">
         <details className="card no-print self-start">
-          <summary className="text-[15px] font-extrabold">＋ Tambah paket · {cab.nama}</summary>
+          <summary className="h2">+ Tambah paket · {cab.nama}</summary>
           <div className="mt-3"><FormItem cabang={cab.nama} kategori={kategori} /></div>
         </details>
         <section className="card text-center">
-          <h2 className="text-[15px] font-extrabold">QR pesan mandiri · {cab.nama}</h2>
+          <h2 className="h2">QR pesan mandiri · {cab.nama}</h2>
           <div className="mx-auto my-2 w-[180px]" dangerouslySetInnerHTML={{ __html: qr }} />
-          <a href={link} target="_blank" rel="noreferrer" className="block break-all text-[11px] font-semibold text-rose">{link}</a>
+          <a href={link} target="_blank" rel="noreferrer" className="block break-all text-[11px] text-muted underline">{link}</a>
           <details className="no-print mt-3 text-left">
             <summary className="btn-ghost btn-sm w-full">Atur gambar QRIS pembayaran</summary>
             <ActionForm action={simpanQris} submit="Simpan QRIS" className="mt-2 space-y-2" submitClass="btn-primary btn-sm w-full">
@@ -75,7 +75,7 @@ export default async function KatalogPage({ searchParams }: { searchParams: Prom
 
       {kategori.map((k) => (
         <section key={k} className="card no-print mb-3">
-          <h2 className="mb-1 text-[13px] font-extrabold uppercase tracking-wide text-rose">{k}</h2>
+          <h2 className="mb-1 text-xs font-medium text-muted">{k}</h2>
           <div className="divide-y divide-line">
             {items.filter((i) => i.category === k).map((i) => (
               <details key={i.id} className={i.active ? "" : "opacity-55"}>

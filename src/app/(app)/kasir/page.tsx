@@ -34,10 +34,10 @@ export default async function KasirPage() {
 
       {(pending ?? []).length > 0 && (
         <section className="card mb-4 border-warn/40 bg-warn-soft/40">
-          <h2 className="mb-2 text-[15px] font-extrabold">Pesanan QR menunggu <span className="pill-warn ml-1">{pending!.length}</span></h2>
+          <h2 className="mb-2 h2">Pesanan QR menunggu <span className="pill-warn ml-1">{pending!.length}</span></h2>
           <div className="grid gap-2.5 md:grid-cols-2">
             {(pending as Order[]).map((o) => (
-              <article key={o.id} className="rounded-xl border border-line bg-surface p-3">
+              <article key={o.id} className="rounded-md border border-line bg-surface p-3">
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <b className="block truncate">{o.customer_name}</b>
@@ -49,7 +49,7 @@ export default async function KasirPage() {
                 <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
                   {["Cash", "QRIS"].map((m) => (
                     <ActionButton key={m} action={konfirmasiPesanan.bind(null, o.id, m)} className={`${o.payment_method === m ? "btn-ok" : "btn-ghost"} btn-sm`}>
-                      ✓ Terima {m}
+                      Terima {m}
                     </ActionButton>
                   ))}
                   <ActionButton action={batalkanPesanan.bind(null, o.id)} className="btn-danger btn-sm" confirm="Batalkan pesanan ini?">Batalkan</ActionButton>
@@ -64,7 +64,7 @@ export default async function KasirPage() {
 
       <details className="card mt-4">
         <summary className="flex items-center justify-between">
-          <span className="text-[15px] font-extrabold">Pesanan lunas hari ini <span className="sub font-semibold">· {(hariIni ?? []).length} pesanan</span></span>
+          <span className="h2">Pesanan lunas hari ini <span className="sub font-medium">· {(hariIni ?? []).length} pesanan</span></span>
           <b className="num">{rp(totalHariIni)}</b>
         </summary>
         <div className="mt-2 divide-y divide-line">

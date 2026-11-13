@@ -4,12 +4,12 @@ import { login } from "./actions";
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ err?: string }> }) {
   const { err } = await searchParams;
   return (
-    <main className="grid min-h-screen place-items-center bg-[radial-gradient(900px_400px_at_50%_-10%,var(--color-rose-soft),var(--color-bg))] p-5">
+    <main className="grid min-h-screen place-items-center p-5">
       <div className="card w-full max-w-sm p-7">
-        <div className="mx-auto mb-3 grid size-14 place-items-center rounded-2xl bg-rose text-2xl font-extrabold text-white">M</div>
+        <div className="mx-auto mb-3 grid size-14 place-items-center rounded-lg bg-rose text-2xl font-medium text-white">M</div>
         <h1 className="h1 text-center">MS Studio</h1>
         <p className="sub mb-5 text-center">Masuk untuk mulai kerja</p>
-        {err === "nonaktif" && <p className="mb-3 rounded-lg bg-bad-soft px-3 py-2 text-xs font-semibold text-bad">Akun tidak aktif atau belum punya profil.</p>}
+        {err === "nonaktif" && <p className="mb-3 rounded-lg bg-bad-soft px-3 py-2 text-xs font-medium text-bad">Akun tidak aktif atau belum punya profil.</p>}
         <ActionForm action={login} submit="Masuk" className="space-y-3">
           <div>
             <label className="label" htmlFor="username">Username</label>

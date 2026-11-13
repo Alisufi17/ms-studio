@@ -57,8 +57,8 @@ export default async function BukuKasPage({ searchParams }: { searchParams: Prom
           <p className="sub">{satuHari ? tgl(dari, { weekday: "long", day: "numeric", month: "long", year: "numeric" }) : `${tgl(dari)} – ${tgl(sampai)}`} · {cabang ?? "Semua cabang"}</p>
         </div>
         <div className="no-print flex flex-wrap gap-1.5">
-          {isOwner && <a className="btn-ghost btn-sm" href={`/export/transaksi?dari=${dari}&sampai=${sampai}&cabang=${cabang ?? ""}`}>⬇ Export transaksi</a>}
-          {isOwner && <a className="btn-ghost btn-sm" href={`/export/laporan?dari=${dari}&sampai=${sampai}&cabang=${cabang ?? ""}`}>⬇ Laporan keuangan</a>}
+          {isOwner && <a className="btn-ghost btn-sm" href={`/export/transaksi?dari=${dari}&sampai=${sampai}&cabang=${cabang ?? ""}`}>Export transaksi</a>}
+          {isOwner && <a className="btn-ghost btn-sm" href={`/export/laporan?dari=${dari}&sampai=${sampai}&cabang=${cabang ?? ""}`}>Laporan keuangan</a>}
         {satuHari && (
           <>
             <Link className="btn-ghost btn-sm" href={url({ dari: addDays(dari, -1), sampai: addDays(dari, -1) })}>← Sehari sebelum</Link>
@@ -87,17 +87,17 @@ export default async function BukuKasPage({ searchParams }: { searchParams: Prom
       </form>
 
       <div className="mb-4 grid grid-cols-2 gap-2.5 lg:grid-cols-4">
-        <div className="card"><p className="label">Uang masuk</p><b className="num text-xl">{rp(s.omzet)}</b><p className="sub text-xs">{s.jumlah_trx} transaksi</p></div>
+        <div className="card"><p className="label">Uang masuk</p><b className="num text-xl font-semibold">{rp(s.omzet)}</b><p className="sub text-xs">{s.jumlah_trx} transaksi</p></div>
         <div className="card"><p className="label">Cash · Non-cash</p><b className="num text-base">{rp(s.cash)}</b><p className="sub num text-xs">{rp(s.non_cash)} QRIS/transfer</p></div>
-        <div className="card"><p className="label">Pengeluaran</p><b className="num text-xl text-bad">{rp(s.pengeluaran)}</b><p className="sub num text-xs">{rp(s.keluar_cash)} dari laci</p></div>
+        <div className="card"><p className="label">Pengeluaran</p><b className="num text-xl font-semibold text-bad">{rp(s.pengeluaran)}</b><p className="sub num text-xs">{rp(s.keluar_cash)} dari laci</p></div>
         <div className={`card ${selisih === 0 ? "" : "border-warn/50 bg-warn-soft/50"}`}>
-          <p className="label">Cash harus disetor</p><b className="num text-xl">{rp(harusSetor)}</b>
-          <p className="sub num text-xs">Disetor {rp(s.setoran)} · {selisih === 0 ? "pas ✓" : selisih > 0 ? `kurang ${rp(selisih)}` : `lebih ${rp(-selisih)}`}</p>
+          <p className="label">Cash harus disetor</p><b className="num text-xl font-semibold">{rp(harusSetor)}</b>
+          <p className="sub num text-xs">Disetor {rp(s.setoran)} · {selisih === 0 ? "pas" : selisih > 0 ? `kurang ${rp(selisih)}` : `lebih ${rp(-selisih)}`}</p>
         </div>
       </div>
 
       <details className="card no-print mb-4">
-        <summary className="text-[15px] font-extrabold">＋ Catat pemasukan lain, pengeluaran, atau setoran <span className="sub font-semibold">· untuk {cabangKerja}</span></summary>
+        <summary className="h2">+ Catat pemasukan lain, pengeluaran, atau setoran <span className="sub font-medium">· untuk {cabangKerja}</span></summary>
         <div className="mt-3 grid gap-4 lg:grid-cols-3">
           <ActionForm action={tambahMasuk} submit="Simpan pemasukan" className="space-y-2">
             <b className="text-[13px]">Pemasukan (di luar kasir)</b>
@@ -126,7 +126,7 @@ export default async function BukuKasPage({ searchParams }: { searchParams: Prom
       </details>
 
       <section className="card mb-4">
-        <h2 className="mb-1 text-[15px] font-extrabold">Uang masuk <span className="sub font-semibold">· {trx.length}{trx.length === 500 ? "+ (persempit tanggal)" : ""} baris{metode || q ? ` tersaring · ${rp(trx.reduce((n, x) => n + x.total, 0))}` : ""}</span></h2>
+        <h2 className="mb-1 h2">Uang masuk <span className="sub font-medium">· {trx.length}{trx.length === 500 ? "+ (persempit tanggal)" : ""} baris{metode || q ? ` tersaring · ${rp(trx.reduce((n, x) => n + x.total, 0))}` : ""}</span></h2>
         <div className="divide-y divide-line">
           {trx.map((x) => (
             <div key={x.id} className="flex flex-wrap items-center gap-x-3 gap-y-0.5 py-2 text-[13px]">
@@ -147,7 +147,7 @@ export default async function BukuKasPage({ searchParams }: { searchParams: Prom
 
       <div className="grid gap-4 lg:grid-cols-2">
         <section className="card">
-          <h2 className="mb-1 text-[15px] font-extrabold">Pengeluaran <span className="sub font-semibold">· {keluar.length}</span></h2>
+          <h2 className="mb-1 h2">Pengeluaran <span className="sub font-medium">· {keluar.length}</span></h2>
           <div className="divide-y divide-line">
             {keluar.map((x) => (
               <div key={x.id} className="flex flex-wrap items-center gap-x-3 py-2 text-[13px]">
@@ -160,7 +160,7 @@ export default async function BukuKasPage({ searchParams }: { searchParams: Prom
           </div>
         </section>
         <section className="card">
-          <h2 className="mb-1 text-[15px] font-extrabold">Setoran <span className="sub font-semibold">· {setor.length}</span></h2>
+          <h2 className="mb-1 h2">Setoran <span className="sub font-medium">· {setor.length}</span></h2>
           <div className="divide-y divide-line">
             {setor.map((x) => (
               <div key={x.id} className="flex flex-wrap items-center gap-x-3 py-2 text-[13px]">

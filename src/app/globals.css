@@ -1,20 +1,21 @@
 @import "tailwindcss";
 
+/* Netral & tenang: abu hangat untuk permukaan, satu aksen (rose tua) dipakai seperlunya. */
 @theme {
-  --color-bg: #faf6f8;
+  --color-bg: #f7f7f8;
   --color-surface: #ffffff;
-  --color-soft: #fcf1f5;
-  --color-line: #efe2e9;
-  --color-ink: #33232d;
-  --color-muted: #7a6a73;
-  --color-rose: #e11d6b;
-  --color-rose-soft: #ffe1ec;
-  --color-ok: #0a7d60;
-  --color-ok-soft: #ddf5ee;
-  --color-warn: #a8690f;
-  --color-warn-soft: #fbeed6;
-  --color-bad: #c9343a;
-  --color-bad-soft: #fde3e4;
+  --color-soft: #f1f1f3;
+  --color-line: #e4e4e7;
+  --color-ink: #18181b;
+  --color-muted: #71717a;
+  --color-rose: #be185d;
+  --color-rose-soft: #fce7f1;
+  --color-ok: #15803d;
+  --color-ok-soft: #e8f5ec;
+  --color-warn: #b45309;
+  --color-warn-soft: #fdf3e1;
+  --color-bad: #b91c1c;
+  --color-bad-soft: #fdecec;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -22,29 +23,35 @@ body {
   background: var(--color-bg);
   color: var(--color-ink);
   font-size: 14px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
+/* Penekanan cukup satu tingkat: <b> = medium, bukan tebal. */
+b, strong { font-weight: 500; }
+
 @layer components {
-  .card { @apply rounded-2xl border border-line bg-surface p-4 shadow-[0_2px_12px_rgba(120,40,80,.05)]; }
-  .btn, .btn-primary, .btn-ghost, .btn-ok, .btn-danger { @apply inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-[13px] font-bold transition active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50; }
-  .btn-primary { @apply bg-rose text-white hover:brightness-95; }
-  .btn-ghost { @apply bg-soft text-ink hover:bg-rose-soft; }
-  .btn-ok { @apply bg-ok text-white hover:brightness-95; }
-  .btn-danger { @apply bg-bad-soft text-bad hover:brightness-95; }
-  .btn-sm { @apply rounded-lg px-3 py-1.5 text-xs; }
-  .input { @apply w-full rounded-xl border border-line bg-surface px-3 py-2.5 text-sm text-ink outline-none focus:border-rose focus:ring-2 focus:ring-rose-soft; }
-  .label { @apply mb-1 block text-xs font-semibold text-muted; }
-  .pill, .pill-ok, .pill-warn, .pill-bad, .pill-mute { @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-bold; }
+  .card { @apply rounded-lg border border-line bg-surface p-4; }
+  .btn, .btn-primary, .btn-ghost, .btn-ok, .btn-danger { @apply inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-md px-3.5 py-2 text-[13px] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-primary { @apply bg-ink text-white hover:bg-zinc-700; }
+  .btn-ghost { @apply border border-line bg-surface text-ink hover:bg-soft; }
+  .btn-ok { @apply bg-ok text-white hover:bg-green-800; }
+  .btn-danger { @apply border border-line bg-surface text-bad hover:bg-bad-soft; }
+  .btn-sm { @apply px-2.5 py-1.5 text-xs; }
+  .input { @apply w-full rounded-md border border-line bg-surface px-3 py-2 text-sm text-ink outline-none placeholder:text-zinc-400 focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200; }
+  .label { @apply mb-1 block text-xs text-muted; }
+  .pill, .pill-ok, .pill-warn, .pill-bad, .pill-mute { @apply inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-medium; }
   .pill-ok { @apply bg-ok-soft text-ok; }
   .pill-warn { @apply bg-warn-soft text-warn; }
   .pill-bad { @apply bg-bad-soft text-bad; }
   .pill-mute { @apply bg-soft text-muted; }
-  .h1 { @apply text-xl font-extrabold tracking-tight; }
+  .h1 { @apply text-xl font-semibold tracking-tight; }
+  .h2 { @apply text-sm font-semibold; }
   .sub { @apply text-[13px] text-muted; }
-  .chip, .chip-on { @apply inline-flex cursor-pointer items-center rounded-full border border-line bg-surface px-3 py-1.5 text-xs font-bold text-muted whitespace-nowrap; }
-  .chip-on { @apply border-ink bg-ink text-white; }
+  .chip, .chip-on { @apply inline-flex cursor-pointer items-center whitespace-nowrap rounded-md border border-line bg-surface px-2.5 py-1.5 text-xs text-muted hover:text-ink; }
+  .chip-on { @apply border-ink bg-ink text-white hover:text-white; }
   .num { font-variant-numeric: tabular-nums; }
+  .dot { @apply inline-block size-2 shrink-0 rounded-full; }
 }
 
 details > summary { cursor: pointer; list-style: none; }

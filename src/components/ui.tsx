@@ -22,8 +22,8 @@ export function ActionForm({
   return (
     <form ref={ref} action={run} className={className}>
       {children}
-      {state.err && <p className="rounded-lg bg-bad-soft px-3 py-2 text-xs font-semibold text-bad">{state.err}</p>}
-      {state.ok && <p className="rounded-lg bg-ok-soft px-3 py-2 text-xs font-semibold text-ok">{state.ok}</p>}
+      {state.err && <p className="rounded-lg bg-bad-soft px-3 py-2 text-xs font-medium text-bad">{state.err}</p>}
+      {state.ok && <p className="rounded-lg bg-ok-soft px-3 py-2 text-xs font-medium text-ok">{state.ok}</p>}
       <button className={submitClass} disabled={pending}>{pending ? "Menyimpan…" : submit}</button>
     </form>
   );
@@ -54,7 +54,7 @@ export function ActionButton({
       >
         {pending ? "…" : children}
       </button>
-      {err && <span className="basis-full text-xs font-semibold text-bad">{err}</span>}
+      {err && <span className="basis-full text-xs font-medium text-bad">{err}</span>}
     </>
   );
 }

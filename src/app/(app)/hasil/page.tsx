@@ -35,14 +35,14 @@ export default async function HasilPage() {
         <p className="sub">Semua hasil foto yang belum dikirim ke customer. Masuk otomatis saat booking/job ditandai selesai atau paket foto dibayar di kasir.</p></div>
 
       <div className="mb-4 grid grid-cols-2 gap-2.5 lg:grid-cols-4">
-        <div className={`card ${proses.some((x) => x.tenggat < t) ? "border-bad/40 bg-bad-soft" : ""}`}><p className="label">Telat</p><b className="num text-2xl text-bad">{proses.filter((x) => x.tenggat < t).length}</b></div>
-        <div className="card"><p className="label">Jatuh tempo hari ini / besok</p><b className="num text-2xl text-warn">{proses.filter((x) => x.tenggat >= t && x.tenggat <= addDays(t, 1)).length}</b></div>
-        <div className="card"><p className="label">Masih dalam antrean</p><b className="num text-2xl">{proses.length}</b></div>
-        <div className="card"><p className="label">Terkirim 30 hari</p><b className="num text-2xl text-ok">{selesai.length}</b><p className="sub text-xs">{selesai.filter(telatKirim).length} di antaranya telat</p></div>
+        <div className={`card ${proses.some((x) => x.tenggat < t) ? "border-bad/40 bg-bad-soft" : ""}`}><p className="label">Telat</p><b className="num text-2xl font-semibold text-bad">{proses.filter((x) => x.tenggat < t).length}</b></div>
+        <div className="card"><p className="label">Jatuh tempo hari ini / besok</p><b className="num text-2xl font-semibold text-warn">{proses.filter((x) => x.tenggat >= t && x.tenggat <= addDays(t, 1)).length}</b></div>
+        <div className="card"><p className="label">Masih dalam antrean</p><b className="num text-2xl font-semibold">{proses.length}</b></div>
+        <div className="card"><p className="label">Terkirim 30 hari</p><b className="num text-2xl font-semibold text-ok">{selesai.length}</b><p className="sub text-xs">{selesai.filter(telatKirim).length} di antaranya telat</p></div>
       </div>
 
       <details className="card no-print mb-4">
-        <summary className="text-[15px] font-extrabold">＋ Tambah manual</summary>
+        <summary className="h2">+ Tambah manual</summary>
         <ActionForm action={buatHasil} submit="Masukkan ke antrean" className="mt-3 grid gap-2 sm:grid-cols-3" submitClass="btn-primary sm:col-span-3">
           <div><label className="label">Nama customer *</label><input name="customer" className="input" required /></div>
           <div><label className="label">No. WhatsApp</label><input name="no_hp" inputMode="tel" className="input" /></div>
@@ -55,23 +55,23 @@ export default async function HasilPage() {
       </details>
 
       <section className="card mb-4">
-        <h2 className="mb-1 text-[15px] font-extrabold">Belum dikirim <span className="sub font-semibold">· urut dari yang paling mendesak</span></h2>
+        <h2 className="mb-1 h2">Belum dikirim <span className="sub font-medium">· urut dari yang paling mendesak</span></h2>
         <div className="divide-y divide-line">
           {proses.map((x) => {
             const h = selisihHari(x.tenggat), link = wa(x.no_hp);
             return (
               <div key={x.id} className="py-2.5">
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[13px]">
-                  <span className={`${h < 0 ? "pill-bad" : h <= 1 ? "pill-warn" : "pill-mute"} w-[5.5rem] justify-center`}>{h < 0 ? `TELAT ${-h} hr` : labelH(h)}</span>
+                  <span className={`${h < 0 ? "pill-bad" : h <= 1 ? "pill-warn" : "pill-mute"} w-[5.5rem] justify-center`}>{h < 0 ? `telat ${-h} hari` : labelH(h)}</span>
                   <span className="min-w-0 flex-1">
                     <b>{x.customer}</b> <span className="text-muted">· {x.layanan}{x.cabang ? ` · ${x.cabang}` : ""}</span>
                     <span className="block text-[11px] text-muted">foto {tgl(x.tanggal_foto)} · batas {tgl(x.tenggat)} · PJ <b className={x.pic === profile.nama ? "text-rose" : ""}>{x.pic ?? "belum ada"}</b>{x.catatan ? ` · ${x.catatan}` : ""}</span>
                   </span>
                   {link && <a href={link} target="_blank" rel="noreferrer" className="btn-ghost btn-sm no-print">WhatsApp</a>}
-                  <ActionButton action={kirimHasil.bind(null, x.id)} className="btn-ok btn-sm no-print" confirm={`Hasil ${x.customer} sudah benar-benar dikirim ke customer?`}>✓ Sudah dikirim</ActionButton>
+                  <ActionButton action={kirimHasil.bind(null, x.id)} className="btn-ok btn-sm no-print" confirm={`Hasil ${x.customer} sudah benar-benar dikirim ke customer?`}>Sudah dikirim</ActionButton>
                 </div>
                 <details className="no-print mt-1">
-                  <summary className="text-[11px] font-bold text-muted underline">ubah penanggung jawab{isOwner ? " / batas kirim" : ""}</summary>
+                  <summary className="text-[11px] font-medium text-muted underline">ubah penanggung jawab{isOwner ? " / batas kirim" : ""}</summary>
                   <ActionForm action={ubahHasil} submit="Simpan" submitClass="btn-ghost btn-sm self-end" className="mt-1.5 flex flex-wrap items-end gap-2">
                     <input type="hidden" name="rid" value={x.id} />
                     <div className="w-36"><label className="label">PJ</label><Pic value={x.pic} /></div>
@@ -82,13 +82,13 @@ export default async function HasilPage() {
               </div>
             );
           })}
-          {!proses.length && <p className="sub py-6 text-center">Semua hasil sudah terkirim. 🎉</p>}
+          {!proses.length && <p className="sub py-6 text-center">Semua hasil sudah terkirim.</p>}
         </div>
       </section>
 
       <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
         <details className="card">
-          <summary className="text-[15px] font-extrabold">Terkirim 30 hari terakhir <span className="sub font-semibold">· {selesai.length}</span></summary>
+          <summary className="h2">Terkirim 30 hari terakhir <span className="sub font-medium">· {selesai.length}</span></summary>
           <div className="mt-2 divide-y divide-line">
             {selesai.map((x) => (
               <div key={x.id} className="flex flex-wrap items-center gap-x-3 py-2 text-[13px]">
@@ -101,7 +101,7 @@ export default async function HasilPage() {
           </div>
         </details>
         <section className="card self-start">
-          <h2 className="mb-2 text-[15px] font-extrabold">Per penanggung jawab</h2>
+          <h2 className="mb-2 h2">Per penanggung jawab</h2>
           {rekap.filter((r) => r.antre || r.kirim).map((r) => (
             <div key={r.n} className="flex items-center justify-between border-b border-line py-2 text-[13px] last:border-0">
               <b>{r.n}</b>
