@@ -1,5 +1,5 @@
 export const METODE = ["Cash", "QRIS", "Transfer"] as const;
-export const LAYANAN = ["Self Photo", "Photobox", "Foto Keluarga", "Foto Wisuda", "Pas Foto", "Lainnya"] as const;
+export const LAYANAN = ["Self Photo", "Photobox", "Foto Keluarga", "Foto Wisuda", "Pas Foto", "Photoshoot", "Lainnya"] as const;
 export const KATEGORI_KELUAR = ["Kertas", "Tinta", "Listrik", "Perlengkapan", "Snack/Minum", "Gaji", "Belanja Besar", "Lainnya"] as const;
 
 /** Ruang yang dipakai sebuah layanan — menentukan slot mana yang bentrok. */

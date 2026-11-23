@@ -11,7 +11,7 @@ type E = {
   id: string; tanggal: string; jam: string | null; klien: string; no_hp: string | null; jenis: string | null; paket: string | null; lokasi: string | null; tim: string | null;
   total: number; dp: number; catatan: string | null; cabang: string | null; status: string; dp_paid_at: string | null; pelunasan_paid_at: string | null; nota_token?: string | null;
 };
-const JENIS = ["Photobooth", "Videobooth", "Wedding", "Dokumentasi", "Wisuda Sekolah", "Lainnya"];
+const JENIS = ["Photobooth", "Videobooth", "Wedding", "Dokumentasi", "Photoshoot", "Wisuda Sekolah", "Lainnya"];
 const wa = (hp: string | null) => (hp ? "https://wa.me/" + hp.replace(/\D/g, "").replace(/^0/, "62") : null);
 
 function Bayar({ e, stage, jumlah }: { e: E; stage: "DP" | "Pelunasan"; jumlah: number }) {
