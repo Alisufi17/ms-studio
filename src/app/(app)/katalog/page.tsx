@@ -4,7 +4,7 @@ import QRCode from "qrcode";
 import { requireOwner } from "@/lib/session";
 import { rp } from "@/lib/format";
 import { ActionButton, ActionForm, MoneyInput } from "@/components/ui";
-import { simpanKatalog, simpanQris, toggleKatalog } from "../actions";
+import { simpanKatalog, simpanNota, simpanQris, toggleKatalog } from "../actions";
 
 type Item = {
   id: string; cabang: string; category: string; name: string; description: string | null; price: number; original_price: number | null; item_type: string;
@@ -42,6 +42,8 @@ export default async function KatalogPage({ searchParams }: { searchParams: Prom
   const { data } = await sb.from("catalog_items").select("*").eq("cabang", cab.nama).order("sort_order").order("name");
   const items = (data ?? []) as Item[];
   const kategori = [...new Set(items.map((i) => i.category))];
+  // kolom ini baru ada setelah migrasi 003; sebelum itu formnya tetap tampil dengan isi kosong
+  const { data: pn } = await sb.from("cabang").select("no_wa,nota_catatan").eq("nama", cab.nama).maybeSingle();
   const h = await headers();
   const link = `${h.get("x-forwarded-proto") ?? "https"}://${h.get("host")}/pesan/${cab.kode.toLowerCase()}`;
   const qr = await QRCode.toString(link, { type: "svg", margin: 1, width: 180 });
@@ -68,6 +70,14 @@ export default async function KatalogPage({ searchParams }: { searchParams: Prom
               <input type="hidden" name="nama" value={cab.nama} />
               <input name="qris_image" defaultValue={cab.qris_image} placeholder="https://… alamat gambar QRIS" className="input" />
               <input name="qris_note" defaultValue={cab.qris_note} placeholder="Catatan untuk customer" className="input" />
+            </ActionForm>
+          </details>
+          <details className="no-print mt-2 text-left">
+            <summary className="btn-ghost btn-sm w-full">Atur teks pada nota</summary>
+            <ActionForm action={simpanNota} submit="Simpan" className="mt-2 space-y-2" submitClass="btn-primary btn-sm w-full">
+              <input type="hidden" name="nama" value={cab.nama} />
+              <input name="no_wa" defaultValue={pn?.no_wa ?? ""} placeholder="Nomor WhatsApp cabang (08xx)" className="input" inputMode="tel" />
+              <textarea name="nota_catatan" rows={4} defaultValue={pn?.nota_catatan ?? ""} placeholder="Ketentuan di bagian bawah nota, mis. aturan DP dan perubahan jadwal" className="input" />
             </ActionForm>
           </details>
         </section>

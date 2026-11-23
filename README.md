@@ -20,6 +20,7 @@ Pengganti `dashboard.html`. Next.js (App Router) + Supabase (Auth, Postgres, RLS
 
 1. **Supabase › SQL Editor** — jalankan `supabase/migrations/001_foundation.sql`.
    Aman: hanya menambah tabel/fungsi. Dashboard lama tetap jalan.
+   Lalu jalankan juga `003_nota.sql` (nota & tanda jadi, lihat bagian di bawah).
 2. **Vercel** — impor repo ini, isi Environment Variables seperti `.env.example`
    (URL, anon key, dan *service role key* proyek `ivodkdvhlkwevfkkzujs`). Deploy.
 3. Buka `https://<domain>/setup` → buat akun pemilik. Halaman ini tertutup sendiri setelah akun pertama ada.
@@ -30,6 +31,21 @@ Pengganti `dashboard.html`. Next.js (App Router) + Supabase (Auth, Postgres, RLS
    Mulai saat itu data hanya bisa diakses akun yang login; dashboard lama berhenti berfungsi.
    Website booking lama tetap bisa cek jam & kirim booking.
 7. Cetak ulang QR meja dari menu **Katalog** (alamatnya berubah menjadi `/pesan/jtb` dan `/pesan/adw`).
+
+## Nota, tagihan DP & tanda jadi
+
+Jalankan `supabase/migrations/003_nota.sql` di SQL Editor (aman diulang; hanya menambah). Setelah itu
+tiap kartu di **Booking** dan **Job Luar** punya tombol:
+
+- **Kirim tagihan / tanda jadi / bukti lunas lewat WhatsApp**: membuka WhatsApp dengan pesan yang sudah
+  terisi dan tautan nota. Admin yang menekan kirim; tidak ada pengiriman otomatis (tanpa API, tanpa risiko nomor diblokir).
+- **Lihat nota**: halaman publik `/nota/<token>` yang bisa dibuka customer tanpa login, bisa dicetak / disimpan PDF.
+
+Tautannya tetap sama dan isinya mengikuti uang yang tercatat: sebelum DP masuk tampil *Tagihan*
+(dengan QRIS cabang), setelah DP *Tanda Jadi*, setelah lunas *Bukti Lunas*, bila dibatalkan *Dibatalkan*.
+Token 64 karakter acak dibuat database; nomor HP dan catatan internal tidak ditampilkan.
+Pemilik mengisi nomor WhatsApp cabang dan ketentuan (mis. aturan DP) di **Katalog › Atur teks pada nota**.
+Tanpa isian itu, nota hanya memuat kalimat netral.
 
 ## Pengingat
 

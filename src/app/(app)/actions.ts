@@ -275,6 +275,16 @@ export async function simpanQris(_: Res, fd: FormData): Promise<Res> {
   return { ok: "QRIS tersimpan" };
 }
 
+export async function simpanNota(_: Res, fd: FormData): Promise<Res> {
+  const { sb, isOwner } = await getSession();
+  if (!isOwner) return { err: "Hanya pemilik." };
+  const wa = str(fd.get("no_wa")).replace(/\D/g, "").replace(/^0/, "62");
+  const { error } = await sb.from("cabang").update({ no_wa: wa, nota_catatan: str(fd.get("nota_catatan")).slice(0, 500) }).eq("nama", str(fd.get("nama")));
+  if (error) return { err: /nota_catatan|no_wa/.test(error.message) ? "Jalankan dulu file 003_nota.sql di Supabase." : pesan(error) };
+  segarkan();
+  return { ok: "Pengaturan nota tersimpan" };
+}
+
 /* ---------------- Akun (pemilik, lewat kunci server) ---------------- */
 export async function buatAkun(_: Res, fd: FormData): Promise<Res> {
   const { isOwner } = await getSession();

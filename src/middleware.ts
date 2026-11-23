@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PUBLIC = ["/login", "/pesan", "/setup", "/api/pengingat"];
+const PUBLIC = ["/login", "/pesan", "/nota", "/setup", "/api/pengingat"];
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -31,5 +31,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|pesan|.*\\.(?:svg|png|jpg|jpeg|webp|ico)$).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|pesan|nota|.*\\.(?:svg|png|jpg|jpeg|webp|ico)$).*)"],
 };
