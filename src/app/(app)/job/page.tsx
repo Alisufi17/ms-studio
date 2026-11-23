@@ -3,7 +3,8 @@ import { rp, tgl, today } from "@/lib/format";
 import { METODE } from "@/lib/constants";
 import { JOB_HARI, labelH, selisihHari } from "@/lib/pengingat";
 import { ActionButton, ActionForm, MoneyInput } from "@/components/ui";
-import { bayarJob, buatJob, statusJob } from "../actions";
+import { JobForm } from "@/components/job-form";
+import { bayarJob, statusJob } from "../actions";
 import { getOrigin } from "@/lib/origin";
 import { statusNota, TOMBOL, waNota } from "@/lib/nota";
 
@@ -11,7 +12,6 @@ type E = {
   id: string; tanggal: string; jam: string | null; klien: string; no_hp: string | null; jenis: string | null; paket: string | null; lokasi: string | null; tim: string | null;
   total: number; dp: number; catatan: string | null; cabang: string | null; status: string; dp_paid_at: string | null; pelunasan_paid_at: string | null; nota_token?: string | null;
 };
-const JENIS = ["Photobooth", "Videobooth", "Wedding", "Dokumentasi", "Photoshoot", "Wisuda Sekolah", "Lainnya"];
 const wa = (hp: string | null) => (hp ? "https://wa.me/" + hp.replace(/\D/g, "").replace(/^0/, "62") : null);
 
 function Bayar({ e, stage, jumlah }: { e: E; stage: "DP" | "Pelunasan"; jumlah: number }) {
@@ -27,7 +27,7 @@ function Bayar({ e, stage, jumlah }: { e: E; stage: "DP" | "Pelunasan"; jumlah: 
   );
 }
 
-function Kartu({ e, origin }: { e: E; origin: string }) {
+function Kartu({ e, origin, lain = 0 }: { e: E; origin: string; lain?: number }) {
   const h = selisihHari(e.tanggal), aktif = e.status === "Terjadwal";
   const dibayar = (e.dp_paid_at ? e.dp || 0 : 0) + (e.pelunasan_paid_at ? Math.max(0, e.total - (e.dp_paid_at ? e.dp || 0 : 0)) : 0);
   const sisa = Math.max(0, (e.total || 0) - dibayar);
@@ -43,6 +43,7 @@ function Kartu({ e, origin }: { e: E; origin: string }) {
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <span className={aktif ? (h < 0 ? "pill-bad" : dekat ? "pill-warn" : "pill-mute") : e.status === "Batal" ? "pill-bad" : "pill-ok"}>{aktif ? labelH(h) : e.status}</span>
+          {lain > 0 && <span className="pill-warn ml-1.5">{lain} job lain di tanggal ini</span>}
           <b className="ml-2 text-[15px]">{e.klien}</b>
           <span className="mt-0.5 block text-xs text-muted">{tgl(e.tanggal, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}{e.jam ? ` · ${e.jam}` : ""} · {e.jenis}{e.paket ? ` ${e.paket}` : ""}</span>
           {(e.lokasi || e.tim) && <span className="block text-xs text-muted">{e.lokasi ? `Lokasi: ${e.lokasi}` : ""}{e.lokasi && e.tim ? " · " : ""}{e.tim ? `Tim: ${e.tim}` : ""}</span>}
@@ -82,26 +83,16 @@ export default async function JobPage() {
     sb.from("event").select("*").neq("status", "Terjadwal").order("tanggal", { ascending: false }).limit(30),
   ]);
   const aktif = (a ?? []) as E[], riwayat = (b ?? []) as E[];
+  const perTanggal = new Map<string, number>();
+  aktif.forEach((e) => perTanggal.set(e.tanggal, (perTanggal.get(e.tanggal) ?? 0) + 1));
   return (
     <>
       <div className="mb-4"><h1 className="h1">Job Luar</h1><p className="sub">Acara di luar studio. Mulai H-{JOB_HARI} muncul pengingat di semua halaman supaya alat, tim, dan transport siap.</p></div>
       <details className="card no-print mb-4">
         <summary className="h2">+ Job luar baru</summary>
-        <ActionForm action={buatJob} submit="Simpan job" className="mt-3 grid gap-2 sm:grid-cols-2" submitClass="btn-primary sm:col-span-2">
-          <div><label className="label">Nama klien / acara *</label><input name="klien" className="input" required /></div>
-          <div><label className="label">No. WhatsApp klien</label><input name="no_hp" inputMode="tel" className="input" placeholder="08xx" /></div>
-          <div><label className="label">Tanggal acara *</label><input type="date" name="tanggal" min={t} className="input" required /></div>
-          <div><label className="label">Jam mulai</label><input type="time" name="jam" className="input" /></div>
-          <div><label className="label">Jenis</label><select name="jenis" className="input">{JENIS.map((j) => <option key={j}>{j}</option>)}</select></div>
-          <div><label className="label">Paket</label><input name="paket" className="input" placeholder="mis. Gold 3 jam" /></div>
-          <div><label className="label">Lokasi</label><input name="lokasi" className="input" placeholder="Gedung / alamat" /></div>
-          <div><label className="label">Tim yang berangkat</label><input name="tim" className="input" placeholder="mis. Hansen, Duwi" /></div>
-          <div><label className="label">Total harga *</label><MoneyInput name="total" required /></div>
-          <div><label className="label">Catatan</label><input name="catatan" className="input" placeholder="backdrop, tema, kebutuhan khusus" /></div>
-          <p className="sub text-xs sm:col-span-2">Dicatat atas cabang {cabang}. DP dan pelunasan dicatat setelah job tersimpan, supaya langsung masuk Buku Kas.</p>
-        </ActionForm>
+        <JobForm cabang={cabang} minDate={t} jobs={aktif} />
       </details>
-      <div className="grid gap-2.5 md:grid-cols-2">{aktif.map((e) => <Kartu key={e.id} e={e} origin={origin} />)}</div>
+      <div className="grid gap-2.5 md:grid-cols-2">{aktif.map((e) => <Kartu key={e.id} e={e} origin={origin} lain={(perTanggal.get(e.tanggal) ?? 1) - 1} />)}</div>
       {!aktif.length && <p className="sub card py-8 text-center">Belum ada job luar terjadwal.</p>}
       {riwayat.length > 0 && (
         <details className="mt-5">

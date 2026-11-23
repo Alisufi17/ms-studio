@@ -165,8 +165,10 @@ export async function buatJob(_: Res, fd: FormData): Promise<Res> {
   if (!row.klien || !isDate(row.tanggal) || row.total <= 0) return { err: "Isi nama klien, tanggal acara, dan total harga." };
   const { error } = await sb.from("event").insert(row);
   if (error) return { err: pesan(error) };
+  // pengecekan ulang di server (daftar di browser bisa saja sudah usang)
+  const { count } = await sb.from("event").select("id", { count: "exact", head: true }).eq("tanggal", row.tanggal).eq("status", "Terjadwal");
   segarkan();
-  return { ok: "Job luar tersimpan" };
+  return { ok: count && count > 1 ? `Job luar tersimpan. Perhatian: ada ${count - 1} job lain di tanggal ini, pastikan alat dan tim cukup.` : "Job luar tersimpan" };
 }
 
 export async function bayarJob(_: Res, fd: FormData): Promise<Res> {
